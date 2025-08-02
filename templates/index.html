@@ -1,11 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
     <title>Mental Health Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Mental Health Chatbot</h1>
-    <p>This is a placeholder homepage.</p>
+    <h2>Mental Health Assistant</h2>
+    <div class="chatbox">
+        <div id="chat"></div>
+        <input type="text" id="userInput" placeholder="Type your feelings..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+<script>
+function sendMessage() {
+    let msg = document.getElementById('userInput').value;
+    document.getElementById('chat').innerHTML += `<p><b>You:</b> ${msg}</p>`;
+
+    fetch('/predict', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `message=${encodeURIComponent(msg)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('chat').innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+        document.getElementById('userInput').value = '';
+    });
+}
+</script>
 </body>
 </html>
